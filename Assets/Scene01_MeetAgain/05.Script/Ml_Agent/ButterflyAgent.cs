@@ -31,7 +31,7 @@ namespace MeetAgain {
             {
                 this.rBody.angularVelocity = Vector3.zero;
                 this.rBody.velocity = Vector3.zero;
-                this.transform.localPosition = new Vector3(Target.position.x + Random.value * 30 - 15 , Random.value * 3 + 0.3f, Target.position.z + Random.value * 30 - 15);   
+                this.transform.localPosition = new Vector3(Target.localPosition.x + Random.value * 30 - 15 , Random.value * 3 + 0.3f, Target.localPosition.z + Random.value * 30 - 15);   
                 isEndByBreak = !isEndByBreak;
             }
             // Target을 Random.value함수를 활용해서 새로운 무작위 위치에 이동
@@ -67,7 +67,7 @@ namespace MeetAgain {
             float distanceToTarget = Vector3.Distance(this.transform.position, Target.position);
             
             // Target에 도달하는 경우 (거리가 1.42보다 작은 경우) Episode 종료
-            if (distanceToTarget < distanceFromSpawnPoint - 1.0)
+            if (distanceToTarget <= 1.42)
             {
                 SetReward(1.0f);                // 이게 완전한 보상인지 , 1회차 보상인지 조사가 필요
                 EndEpisode();
@@ -75,9 +75,10 @@ namespace MeetAgain {
 
             // 플랫폼 밖으로 나가면 Episode 종료
 
-             if (distanceToTarget >= 100.0f || this.transform.position.y <= - 0.1f)
+             if (distanceToTarget >= 50.0f || this.transform.position.y <= - 0.1f || this.transform.position.y >= 15.0f)
             {
                 isEndByBreak = !isEndByBreak;
+                SetReward(-0.005f);
                 EndEpisode();
             }
 
