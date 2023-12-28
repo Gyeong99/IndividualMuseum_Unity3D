@@ -7,21 +7,24 @@ using Unity.MLAgents.Actuators;
 using Unity.Barracuda;
 
 namespace MeetAgain {
-    public class ButterflyAgentChase : Agent
+    public class ButterflyAgentChaseModel : Agent
     {
 
-        
+        // rBody라는 Rigidbody 함수 정의
         Rigidbody rBody;
-        Vector3 spawnPoint;
-        private bool isEndByBreak;
-        public Transform Target;
-        void Start()
-        {
         
+        private bool isEndByBreak;
+        private Transform Target;
+        void Awake()
+        {
+            // rBody함수는 현재 GameObject의 Rigidbody Component를 참조
+            Target = GameObject.FindWithTag("AITarget").transform;
             rBody = GetComponent<Rigidbody>();
-            spawnPoint = Vector3.zero;
             isEndByBreak = false;
         }
+
+        
+        
         public override void OnEpisodeBegin()
         {
             
@@ -30,13 +33,14 @@ namespace MeetAgain {
             {
                 this.rBody.angularVelocity = Vector3.zero;
                 this.rBody.velocity = Vector3.zero;
-                
                 isEndByBreak = !isEndByBreak;
             }
             // Target을 Random.value함수를 활용해서 새로운 무작위 위치에 이동
-            this.transform.localPosition = new Vector3(Target.localPosition.x + Random.value * 30 - 15, Random.value * 3 + 0.3f, Target.localPosition.z + Random.value * 30 - 15);
-            Target.localPosition = new Vector3(Random.value * 5, Random.value * 1 + 2.5f, Random.value * 8 - 3);
-            this.spawnPoint = transform.localPosition;
+            this.transform.localPosition = new Vector3(Target.localPosition.x + Random.value * 30 - 15,
+                Random.value * 3 + 0.3f, 
+                Target.localPosition.z + Random.value * 30 - 15);
+            
+            
         }
 
         public override void CollectObservations(VectorSensor sensor)       // ml 에이전트의 환경 관찰 및 정보를 주는 것 (쉽게 말해 힘 조절을 해주게 하는 함수이다.)
@@ -51,7 +55,7 @@ namespace MeetAgain {
             sensor.AddObservation(rBody.velocity.z);
         }
 
-        public float forceMultiplier = 1;
+        private float forceMultiplier = 5;
         public override void OnActionReceived(ActionBuffers actionBuffers)
         {
 

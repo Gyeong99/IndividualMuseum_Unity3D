@@ -44,8 +44,6 @@ namespace MeetAgain
         {
             // Target/Agent의 위치 정보 수집
             sensor.AddObservation(Vector3.Distance(this.transform.position, Target.position));
-            sensor.AddObservation(this.transform.localPosition);
-
             // Agent의 velocity 정보 수집
             sensor.AddObservation(rBody.velocity.x);
             sensor.AddObservation(rBody.velocity.y);
