@@ -9,9 +9,7 @@ public class ManagerButterfly : MonoBehaviour
 {
 
     [SerializeField]
-    private GameObject chaseButterflyPrefab;
-    [SerializeField]
-    private GameObject stayButterflyPrefab;
+    private GameObject butterflyPrefab;
     [SerializeField]
     private Transform destination;
     [SerializeField]
@@ -21,41 +19,31 @@ public class ManagerButterfly : MonoBehaviour
     [SerializeField]
     private int maxButterflyCount;
 
-    private List<ButterflyBaseEntity> chaseButterflyentitys;
-    private List<ButterflyBaseEntity> stayButterflyentitys;
+    private List<ButterflyBaseEntity> butterflyentitys;
     private int butterflyCount = 0;
     private Vector3 butterflySpawnPoints;
     private IEnumerator butterflySpawnTimer;
     
     private void Awake()
     {
-        chaseButterflyentitys = new List<ButterflyBaseEntity>();
-        stayButterflyentitys = new List<ButterflyBaseEntity>();
+        butterflyentitys = new List<ButterflyBaseEntity>();
         butterflySpawnPoints = Vector3.zero;
         butterflySpawnTimer = ButterflySpawnTimer();
         StartCoroutine(butterflySpawnTimer);
     }
     private void FixedUpdate()
     {
-        for (int i = 0; i < chaseButterflyentitys.Count; i++)
+        for (int i = 0; i < butterflyentitys.Count; i++)
         {
-            chaseButterflyentitys[i].FixedUpdated();
-            if (chaseButterflyentitys[i].TargetDistance <= 5.5f)
+            butterflyentitys[i].FixedUpdated();
+            if (butterflyentitys[i].TargetDistance <= 5.5f)
             {
-                AddStayButterflyList(chaseButterflyentitys[i].transform.position , chaseButterflyentitys[i].ID);
-                Destroy(chaseButterflyentitys[i].gameObject);
-                chaseButterflyentitys.RemoveAt(i);
+                
+                Destroy(butterflyentitys[i].gameObject);
+                butterflyentitys.RemoveAt(i);
             }
         }
-        for (int i = 0; i < stayButterflyentitys.Count; i++)
-        {
-            stayButterflyentitys[i].FixedUpdated();
-            if (stayButterflyentitys.Count == maxButterflyCount)
-            {
-                ResetStayButterfly(stayButterflyentitys);
-                StartCoroutine(butterflySpawnTimer);
-            }
-        }
+        
         if (butterflyCount >= maxButterflyCount)
         {
             StopCoroutine(butterflySpawnTimer);
@@ -76,21 +64,11 @@ public class ManagerButterfly : MonoBehaviour
     private void AddChaseButterflyList()
     {
         butterflySpawnPoints = GetRandomVector();
-        GameObject clone = Instantiate(chaseButterflyPrefab);
+        GameObject clone = Instantiate(butterflyPrefab);
         Butterfly butterflyEntity = clone.GetComponent<Butterfly>();
         butterflyEntity.SetUp(butterflyCount);
-        chaseButterflyentitys.Add(butterflyEntity);
+        butterflyentitys.Add(butterflyEntity);
         clone.transform.position = butterflySpawnPoints;
-        clone.transform.SetParent(spawnArea);
-    }
-
-    private void AddStayButterflyList(Vector3 spawnPoint , int entityCount)
-    {
-        GameObject clone = Instantiate(stayButterflyPrefab);
-        Butterfly butterflyEntity = clone.GetComponent<Butterfly>();
-        butterflyEntity.SetUp(entityCount);
-        stayButterflyentitys.Add(butterflyEntity);
-        clone.transform.position = spawnPoint;
         clone.transform.SetParent(spawnArea);
     }
 

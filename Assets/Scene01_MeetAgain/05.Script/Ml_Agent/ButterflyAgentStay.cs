@@ -36,8 +36,6 @@ namespace MeetAgain
                 isEndByBreak = !isEndByBreak;
             }
             // Target을 Random.value함수를 활용해서 새로운 무작위 위치에 이동
-            
-            this.spawnPoint = transform.position;
         }
 
         public override void CollectObservations(VectorSensor sensor)       // ml 에이전트의 환경 관찰 및 정보를 주는 것 (쉽게 말해 힘 조절을 해주게 하는 함수이다.)
